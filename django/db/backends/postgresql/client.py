@@ -1,4 +1,5 @@
 import os
+import signal
 import subprocess
 
 from django.core.files.temp import NamedTemporaryFile
@@ -54,8 +55,11 @@ class DatabaseClient(BaseDatabaseClient):
                     # If the current locale can't encode the data, we let
                     # the user input the password manually.
                     pass
+            existing_handler = signal.getsignal(signal.SIGINT)
+            signal.signal(signal.SIGINT, lambda sig, _: pass)
             subprocess.check_call(args)
         finally:
+            signal.signal(signal.SIGINT, existing_handler)
             if temp_pgpass:
                 temp_pgpass.close()
                 if 'PGPASSFILE' in os.environ:  # unit tests need cleanup
