@@ -56,7 +56,7 @@ class DatabaseClient(BaseDatabaseClient):
                     # the user input the password manually.
                     pass
             existing_handler = signal.getsignal(signal.SIGINT)
-            signal.signal(signal.SIGINT, lambda sig, _: pass)
+            signal.signal(signal.SIGINT, lambda sig, frame: None)
             subprocess.check_call(args)
         finally:
             signal.signal(signal.SIGINT, existing_handler)
